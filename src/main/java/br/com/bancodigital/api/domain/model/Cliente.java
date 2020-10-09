@@ -2,8 +2,10 @@ package br.com.bancodigital.api.domain.model;
 
 import br.com.bancodigital.api.domain.model.base.EntidadeBase;
 import br.com.bancodigital.api.domain.model.enums.TipoPessoa;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,6 +13,8 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "cliente")
 @Getter @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@DynamicUpdate
 public class Cliente extends EntidadeBase {
 
 	private String nome;
@@ -26,13 +30,14 @@ public class Cliente extends EntidadeBase {
 	@Embedded
 	private Endereco endereco;
 
-	public String getCpfOuCnpjSemFormatacao() {
-		return TipoPessoa.removerFormatacao(cpf);
-	}
-	
 	@PrePersist @PreUpdate
 	private void prePersistPreUpdate() {
-		cpf = getCpfOuCnpjSemFormatacao();
+		cpf = TipoPessoa.removerFormatacao(cpf);
+	}
+
+	@PostPersist @PostUpdate
+	private void postPersistPostUpdate() {
+		cpf = tipoPessoa.formatar(cpf);
 	}
 	
 	@PostLoad

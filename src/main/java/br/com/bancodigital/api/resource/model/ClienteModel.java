@@ -3,7 +3,6 @@ package br.com.bancodigital.api.resource.model;
 import br.com.bancodigital.api.domain.model.Endereco;
 import br.com.bancodigital.api.domain.model.enums.TipoPessoa;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
@@ -14,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Getter @Setter
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClienteModel {
 
     private Long id;

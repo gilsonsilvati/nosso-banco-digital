@@ -19,7 +19,7 @@ public class Cidade extends EntidadeBase {
 	
 	@NotNull(message = "Estado é obrigatório")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "codigo_estado")
+	@JoinColumn(name = "id_estado")
 	@JsonIgnore
 	private Estado estado;
 

@@ -9,6 +9,7 @@ CREATE TABLE cliente (
     cep VARCHAR(15),
     logradouro VARCHAR(50),
     numero VARCHAR(15),
+    bairro VARCHAR(50),
     complemento VARCHAR(20),
     id_cidade BIGINT(20),
     FOREIGN KEY (id_cidade) REFERENCES cidade(id)

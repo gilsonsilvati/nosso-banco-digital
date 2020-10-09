@@ -1,4 +1,4 @@
-package br.com.bancodigital.api.core;
+package br.com.bancodigital.api.domain.core;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

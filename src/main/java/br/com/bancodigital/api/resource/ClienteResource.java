@@ -1,5 +1,8 @@
 package br.com.bancodigital.api.resource;
 
+import br.com.bancodigital.api.domain.model.Cliente;
+import br.com.bancodigital.api.domain.model.Endereco;
+import br.com.bancodigital.api.domain.repository.Clientes;
 import br.com.bancodigital.api.domain.service.ClienteService;
 import br.com.bancodigital.api.resource.event.RecursoCriadoEvent;
 import br.com.bancodigital.api.resource.model.ClienteModel;
@@ -21,6 +24,9 @@ public class ClienteResource {
     private ClienteService clienteService;
 
     @Autowired
+    private Clientes clientes;
+
+    @Autowired
     private ApplicationEventPublisher publisher;
 
     @GetMapping
@@ -28,11 +34,24 @@ public class ClienteResource {
         return clienteService.listar();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
+        return clientes.findById(id)
+                .map(cliente -> ResponseEntity.ok(cliente))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<ClienteModel> adicionar(@Valid @RequestBody ClienteModel clienteInputModel, HttpServletResponse response) {
         ClienteModel clienteModel = clienteService.salvar(clienteInputModel);
-        publisher.publishEvent(new RecursoCriadoEvent(this, response, clienteModel.getId()));
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, clienteModel.getId(), "/endereco"));
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteModel);
+    }
+
+    @PutMapping("/{id}/endereco")
+    public ResponseEntity<ClienteModel> adicionarEndereco(@PathVariable Long id, @Valid @RequestBody Endereco endereco) {
+        ClienteModel clienteModel = clienteService.salvarEndereco(id, endereco);
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteModel);
     }
 

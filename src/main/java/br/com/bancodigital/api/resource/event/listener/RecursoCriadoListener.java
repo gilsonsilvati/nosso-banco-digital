@@ -15,13 +15,14 @@ public class RecursoCriadoListener implements ApplicationListener<RecursoCriadoE
     public void onApplicationEvent(RecursoCriadoEvent recursoCriadoEvent) {
         HttpServletResponse response = recursoCriadoEvent.getResponse();
         Long id = recursoCriadoEvent.getId();
+        String path = recursoCriadoEvent.getPath();
 
-        adicionarHeaderLocation(response, id);
+        adicionarHeaderLocation(response, id, path);
     }
 
-    private void adicionarHeaderLocation(HttpServletResponse response, Long id) {
+    private void adicionarHeaderLocation(HttpServletResponse response, Long id, String path) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .path("/{id}/enderecos")
+                .path("/{id}" + path)
                 .buildAndExpand(id)
                 .toUri();
 

@@ -1,7 +1,11 @@
 package br.com.bancodigital.api.domain.service;
 
+import br.com.bancodigital.api.domain.exception.EntidadeNaoEncontradaException;
 import br.com.bancodigital.api.domain.exception.NegocioException;
+import br.com.bancodigital.api.domain.model.Cidade;
 import br.com.bancodigital.api.domain.model.Cliente;
+import br.com.bancodigital.api.domain.model.Endereco;
+import br.com.bancodigital.api.domain.repository.Cidades;
 import br.com.bancodigital.api.domain.repository.Clientes;
 import br.com.bancodigital.api.resource.model.ClienteModel;
 import org.modelmapper.ModelMapper;
@@ -22,6 +26,9 @@ public class ClienteService {
     private Clientes clientes;
 
     @Autowired
+    private Cidades cidades;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public List<ClienteModel> listar() {
@@ -30,11 +37,24 @@ public class ClienteService {
 
     public ClienteModel salvar(ClienteModel clienteInputModel) {
         Cliente cliente = toEntity(clienteInputModel);
-        Optional<Cliente> clienteExistente = clientes.findByCpf(cliente.getCpfOuCnpjSemFormatacao());
+        Optional<Cliente> clienteExistente = clientes.findByCpf(cliente.getCpf());
 
         validarCliente(cliente, clienteExistente);
 
         return toModel(clientes.save(cliente));
+    }
+
+    public ClienteModel salvarEndereco(Long id, Endereco endereco) {
+        Optional<Cliente> clienteOptional = clientes.findById(id);
+
+        if (clienteOptional.isEmpty())
+            throw new EntidadeNaoEncontradaException("Cliente de id " + id + " não localizado.");
+
+        Optional<Cidade> cidadeOptional = cidades.findById(endereco.getCidade().getId());
+        endereco.setCidade(cidadeOptional.get());
+        clienteOptional.get().setEndereco(endereco);
+
+        return toModel(clientes.save(clienteOptional.get()));
     }
 
     private List<ClienteModel> toCollectionModel(List<Cliente> clientes) {
