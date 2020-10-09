@@ -1,7 +1,5 @@
-package br.com.brewer.model;
+package br.com.bancodigital.api.domain.model;
 
-import br.com.bancodigital.api.domain.model.Cidade;
-import br.com.bancodigital.api.domain.model.Estado;
 import lombok.Getter;
 import lombok.Setter;
 
