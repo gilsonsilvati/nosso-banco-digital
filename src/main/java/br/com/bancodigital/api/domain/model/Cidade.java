@@ -18,13 +18,9 @@ public class Cidade extends EntidadeBase {
 	private String nome;
 	
 	@NotNull(message = "Estado é obrigatório")
-	@ManyToOne(fetch = FetchType.LAZY) // Ignora no JPA 1°
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "codigo_estado")
-	@JsonIgnore // Ignora na View 2°
+	@JsonIgnore
 	private Estado estado;
-	
-	public boolean temEstado() {
-		return this.estado != null;
-	}
 
 }

@@ -20,7 +20,7 @@ public class Endereco {
 	private String complemento;
 
 	@ManyToOne
-	@JoinColumn(name = "codigo_cidade")
+	@JoinColumn(name = "id_cidade")
 	private Cidade cidade;
 
 	@Transient

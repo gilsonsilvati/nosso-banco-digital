@@ -34,9 +34,6 @@ public class Cliente extends EntidadeBase {
 	@Email(message = "E-mail inválido")
 	private String email;
 
-	@NotBlank(message = "CNH é obrigatório")
-	private String cnh;
-
 	@NotNull(message = "Data de nascimento é obrigatório")
 	private LocalDate nascimento;
 
