@@ -1,4 +1,4 @@
-package br.com.bancodigital.api.resource.exceptionhandler;
+package br.com.bancodigital.api.exceptionhandler;
 
 import br.com.bancodigital.api.domain.exception.EntidadeNaoEncontradaException;
 import br.com.bancodigital.api.domain.exception.NegocioException;

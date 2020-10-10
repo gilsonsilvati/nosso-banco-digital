@@ -1,11 +1,12 @@
 package br.com.bancodigital.api.resource;
 
 import br.com.bancodigital.api.domain.model.Cliente;
+import br.com.bancodigital.api.domain.model.Documento;
 import br.com.bancodigital.api.domain.model.Endereco;
 import br.com.bancodigital.api.domain.repository.Clientes;
 import br.com.bancodigital.api.domain.service.ClienteService;
-import br.com.bancodigital.api.resource.event.RecursoCriadoEvent;
-import br.com.bancodigital.api.resource.model.ClienteModel;
+import br.com.bancodigital.api.event.RecursoCriadoEvent;
+import br.com.bancodigital.api.model.ClienteModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,17 @@ public class ClienteResource {
     @PutMapping("/{id}/endereco")
     public ResponseEntity<ClienteModel> adicionarEndereco(@PathVariable Long id, @Valid @RequestBody Endereco endereco) {
         ClienteModel clienteModel = clienteService.salvarEndereco(id, endereco);
+        // TODO: Location -> /{id}/documento
+
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteModel);
+    }
+
+    @PostMapping("/{id}/documento")
+    public ResponseEntity<ClienteModel> adicionarDocumento(@PathVariable Long id, @Valid @RequestBody Documento documento) {
+        clienteService.salvarDocumento(id, documento);
+        // TODO: Location -> /api/v1/propostas/{id}
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }

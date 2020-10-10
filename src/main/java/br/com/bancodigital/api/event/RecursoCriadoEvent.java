@@ -1,4 +1,4 @@
-package br.com.bancodigital.api.resource.event;
+package br.com.bancodigital.api.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

@@ -1,4 +1,4 @@
-package br.com.bancodigital.api.resource.model;
+package br.com.bancodigital.api.model;
 
 import br.com.bancodigital.api.domain.model.Endereco;
 import br.com.bancodigital.api.domain.model.enums.TipoPessoa;

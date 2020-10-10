@@ -3,7 +3,7 @@ CREATE TABLE cliente (
     nome VARCHAR(50) NOT NULL,
     sobrenome VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    nascimento date not null,
+    nascimento date NOT NULL,
     tipo_pessoa VARCHAR(10) NOT NULL,
     cpf VARCHAR(11) NOT NULL,
     cep VARCHAR(15),

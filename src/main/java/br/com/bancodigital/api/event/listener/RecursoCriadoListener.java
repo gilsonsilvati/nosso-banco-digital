@@ -1,6 +1,6 @@
-package br.com.bancodigital.api.resource.event.listener;
+package br.com.bancodigital.api.event.listener;
 
-import br.com.bancodigital.api.resource.event.RecursoCriadoEvent;
+import br.com.bancodigital.api.event.RecursoCriadoEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,7 +22,8 @@ public class RecursoCriadoListener implements ApplicationListener<RecursoCriadoE
 
     private void adicionarHeaderLocation(HttpServletResponse response, Long id, String path) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .path("/{id}" + path)
+                .path("/{id}")
+                .path(path)
                 .buildAndExpand(id)
                 .toUri();
 

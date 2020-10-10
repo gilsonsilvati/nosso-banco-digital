@@ -2,12 +2,13 @@ package br.com.bancodigital.api.domain.service;
 
 import br.com.bancodigital.api.domain.exception.EntidadeNaoEncontradaException;
 import br.com.bancodigital.api.domain.exception.NegocioException;
-import br.com.bancodigital.api.domain.model.Cidade;
-import br.com.bancodigital.api.domain.model.Cliente;
-import br.com.bancodigital.api.domain.model.Endereco;
+import br.com.bancodigital.api.domain.model.*;
+import br.com.bancodigital.api.domain.model.enums.StatusProposta;
 import br.com.bancodigital.api.domain.repository.Cidades;
 import br.com.bancodigital.api.domain.repository.Clientes;
-import br.com.bancodigital.api.resource.model.ClienteModel;
+import br.com.bancodigital.api.domain.repository.Documentos;
+import br.com.bancodigital.api.domain.repository.Propostas;
+import br.com.bancodigital.api.model.ClienteModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -29,6 +30,12 @@ public class ClienteService {
     private Cidades cidades;
 
     @Autowired
+    private Propostas propostas;
+
+    @Autowired
+    private Documentos documentos;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public List<ClienteModel> listar() {
@@ -41,15 +48,14 @@ public class ClienteService {
 
         validarCliente(cliente, clienteExistente);
 
-        return toModel(clientes.save(cliente));
+        cliente = clientes.save(cliente);
+        novaProposta(cliente);
+
+        return toModel(cliente);
     }
 
     public ClienteModel salvarEndereco(Long id, Endereco endereco) {
-        Optional<Cliente> clienteOptional = clientes.findById(id);
-
-        if (clienteOptional.isEmpty())
-            throw new EntidadeNaoEncontradaException("Cliente de id " + id + " não localizado.");
-
+        Optional<Cliente> clienteOptional = buscarCliente(id);
         Optional<Cidade> cidadeOptional = cidades.findById(endereco.getCidade().getId());
         endereco.setCidade(cidadeOptional.get());
         clienteOptional.get().setEndereco(endereco);
@@ -57,18 +63,28 @@ public class ClienteService {
         return toModel(clientes.save(clienteOptional.get()));
     }
 
-    private List<ClienteModel> toCollectionModel(List<Cliente> clientes) {
-        return clientes.stream()
-                .map(cliente -> toModel(cliente))
-                .collect(Collectors.toList());
+    public void salvarDocumento(Long id, Documento documento) {
+        Optional<Cliente> clienteOptional = buscarCliente(id);
+        Optional<Proposta> propostaOptional = propostas.findByCliente(clienteOptional.get());
+
+        documento.setProposta(propostaOptional.get());
+        documentos.save(documento);
+
+        atualizarProposta(propostaOptional.get(), StatusProposta.AGUARDANDO);
     }
 
-    private ClienteModel toModel(Cliente cliente) {
-        return modelMapper.map(cliente, ClienteModel.class);
+    private void atualizarProposta(Proposta proposta, StatusProposta statusProposta) {
+        proposta.setStatus(statusProposta);
+        propostas.save(proposta);
     }
 
-    private Cliente toEntity(ClienteModel clienteInputModel) {
-        return modelMapper.map(clienteInputModel, Cliente.class);
+    private Optional<Cliente> buscarCliente(Long id) {
+        Optional<Cliente> clienteOptional = clientes.findById(id);
+
+        if (clienteOptional.isEmpty())
+            throw new EntidadeNaoEncontradaException("Cliente de id " + id + " não localizado.");
+
+        return clienteOptional;
     }
 
     private void validarCliente(Cliente cliente, Optional<Cliente> clienteExistente) {
@@ -89,6 +105,28 @@ public class ClienteService {
         long idade = ChronoUnit.YEARS.between(nascimento, hoje);
 
         return nascimento.isBefore(hoje) && idade > 18;
+    }
+
+    private Proposta novaProposta(Cliente cliente) {
+        Proposta proposta = new Proposta();
+        proposta.setCliente(cliente);
+        proposta = propostas.save(proposta);
+
+        return proposta;
+    }
+
+    private List<ClienteModel> toCollectionModel(List<Cliente> clientes) {
+        return clientes.stream()
+                .map(cliente -> toModel(cliente))
+                .collect(Collectors.toList());
+    }
+
+    private ClienteModel toModel(Cliente cliente) {
+        return modelMapper.map(cliente, ClienteModel.class);
+    }
+
+    private Cliente toEntity(ClienteModel clienteInputModel) {
+        return modelMapper.map(clienteInputModel, Cliente.class);
     }
 
 }
