@@ -1,6 +1,6 @@
 package br.com.bancodigital.api.domain.model;
 
-import br.com.bancodigital.api.domain.model.validation.CEP;
+import br.com.bancodigital.api.domain.model.validation.annotation.CEP;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;

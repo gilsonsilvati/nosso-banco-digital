@@ -3,6 +3,7 @@ package br.com.bancodigital.api.resource;
 import br.com.bancodigital.api.domain.model.Cliente;
 import br.com.bancodigital.api.domain.model.Proposta;
 import br.com.bancodigital.api.domain.repository.Propostas;
+import br.com.bancodigital.api.model.PropostaModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +26,13 @@ public class PropostaResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Proposta> buscarPorId(@PathVariable Long id) {
-        return propostas.findById(id)
-                .map(proposta -> ResponseEntity.ok(proposta))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<PropostaModel> buscarPorId(@PathVariable Long id) {
+        return null;
+    }
+
+    @GetMapping("/cliente/{id}")
+    public ResponseEntity<PropostaModel> buscarPorIdCliente(@PathVariable Long id) {
+        return null;
     }
 
 }

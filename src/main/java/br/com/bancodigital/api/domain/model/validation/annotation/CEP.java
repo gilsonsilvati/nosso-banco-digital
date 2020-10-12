@@ -1,4 +1,4 @@
-package br.com.bancodigital.api.domain.model.validation;
+package br.com.bancodigital.api.domain.model.validation.annotation;
 
 import javax.validation.Constraint;
 import javax.validation.OverridesAttribute;

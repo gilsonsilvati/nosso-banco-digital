@@ -22,7 +22,6 @@ public class RecursoCriadoListener implements ApplicationListener<RecursoCriadoE
 
     private void adicionarHeaderLocation(HttpServletResponse response, Long id, String path) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .path("/{id}")
                 .path(path)
                 .buildAndExpand(id)
                 .toUri();

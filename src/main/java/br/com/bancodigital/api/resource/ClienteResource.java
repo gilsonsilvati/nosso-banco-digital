@@ -45,7 +45,7 @@ public class ClienteResource {
     @PostMapping
     public ResponseEntity<ClienteModel> adicionar(@Valid @RequestBody ClienteModel clienteInputModel, HttpServletResponse response) {
         ClienteModel clienteModel = clienteService.salvar(clienteInputModel);
-        publisher.publishEvent(new RecursoCriadoEvent(this, response, clienteModel.getId(), "/endereco"));
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, clienteModel.getId(), "/{id}/endereco"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteModel);
     }
@@ -59,7 +59,7 @@ public class ClienteResource {
     }
 
     @PostMapping("/{id}/documento")
-    public ResponseEntity<ClienteModel> adicionarDocumento(@PathVariable Long id, @Valid @RequestBody Documento documento) {
+    public ResponseEntity<Void> adicionarDocumento(@PathVariable Long id, @Valid @RequestBody Documento documento) {
         clienteService.salvarDocumento(id, documento);
         // TODO: Location -> /api/v1/propostas/{id}
 
