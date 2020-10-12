@@ -12,4 +12,6 @@ public interface Propostas extends JpaRepository<Proposta, Long> {
 
     Optional<Proposta> findByCliente(Cliente cliente);
 
+    Optional<Proposta> findByClienteId(Long id);
+
 }

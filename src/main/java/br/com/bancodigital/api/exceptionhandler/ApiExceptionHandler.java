@@ -1,7 +1,9 @@
 package br.com.bancodigital.api.exceptionhandler;
 
+import br.com.bancodigital.api.domain.exception.DocumentoNaoEncontradoException;
 import br.com.bancodigital.api.domain.exception.EntidadeNaoEncontradaException;
 import br.com.bancodigital.api.domain.exception.NegocioException;
+import br.com.bancodigital.api.domain.exception.PropostaNaoEncontradaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -38,6 +40,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		var status = HttpStatus.BAD_REQUEST;
 		var problema = new Problema(status.value(), OffsetDateTime.now(), ex.getMessage(), new ArrayList<Problema.Campo>());
 		
+		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(PropostaNaoEncontradaException.class)
+	public ResponseEntity<Object> handlePropostaNaoEncontrada(PropostaNaoEncontradaException ex, WebRequest request) {
+		var status = HttpStatus.UNPROCESSABLE_ENTITY;
+		var problema = new Problema(status.value(), OffsetDateTime.now(), ex.getMessage(), new ArrayList<Problema.Campo>());
+
+		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(DocumentoNaoEncontradoException.class)
+	public ResponseEntity<Object> handleDocumentoNaoEncontrado(DocumentoNaoEncontradoException ex, WebRequest request) {
+		var status = HttpStatus.NOT_FOUND;
+		var problema = new Problema(status.value(), OffsetDateTime.now(), ex.getMessage(), new ArrayList<Problema.Campo>());
+
 		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
 	}
 	

@@ -1,16 +1,17 @@
 package br.com.bancodigital.api.resource;
 
-import br.com.bancodigital.api.domain.model.Cliente;
 import br.com.bancodigital.api.domain.model.Proposta;
 import br.com.bancodigital.api.domain.repository.Propostas;
+import br.com.bancodigital.api.domain.service.PropostaService;
+import br.com.bancodigital.api.event.RecursoCriadoEvent;
+import br.com.bancodigital.api.model.AceiteModel;
 import br.com.bancodigital.api.model.PropostaModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -20,19 +21,28 @@ public class PropostaResource {
     @Autowired
     private Propostas propostas;
 
+    @Autowired
+    private PropostaService propostaService;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     @GetMapping
     public List<Proposta> listar() {
         return propostas.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PropostaModel> buscarPorId(@PathVariable Long id) {
-        return null;
+    public ResponseEntity<PropostaModel> buscarPorId(@PathVariable Long id, HttpServletResponse response) {
+        PropostaModel propostaModel = propostaService.porId(id);
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, propostaModel.getId(), "/aceite"));
+
+        return ResponseEntity.ok(propostaModel);
     }
 
-    @GetMapping("/cliente/{id}")
-    public ResponseEntity<PropostaModel> buscarPorIdCliente(@PathVariable Long id) {
-        return null;
+    @PutMapping("/{id}/aceite")
+    public ResponseEntity<AceiteModel> aceitePorId(@PathVariable Long id, @RequestBody Boolean aceite) {
+        return ResponseEntity.ok(propostaService.verificarAceitePorId(id, aceite));
     }
 
 }

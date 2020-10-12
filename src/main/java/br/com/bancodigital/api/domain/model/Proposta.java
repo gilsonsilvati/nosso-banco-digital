@@ -33,7 +33,7 @@ public class Proposta extends EntidadeBase {
     @PrePersist @PreUpdate
     private void prePersistPreUpdate() {
         data = LocalDate.now();
-        status = status == null ? StatusProposta.SOLICITADO : status;
+        status = status == null ? StatusProposta.SOLICITADA : status;
     }
 
 }

@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum StatusProposta {
 
-    SOLICITADO,
+    SOLICITADA,
     AGUARDANDO,
-    APROVADO,
-    REPROVADO;
+    APROVADA,
+    NEGADA;
 
 }

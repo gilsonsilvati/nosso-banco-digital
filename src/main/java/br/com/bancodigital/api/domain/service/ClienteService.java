@@ -1,6 +1,7 @@
 package br.com.bancodigital.api.domain.service;
 
 import br.com.bancodigital.api.domain.exception.EntidadeNaoEncontradaException;
+import br.com.bancodigital.api.domain.exception.NegocioException;
 import br.com.bancodigital.api.domain.model.*;
 import br.com.bancodigital.api.domain.model.enums.StatusProposta;
 import br.com.bancodigital.api.domain.repository.Cidades;
@@ -36,7 +37,7 @@ public class ClienteService {
     }
 
     public ClienteModel salvar(ClienteModel clienteModel) {
-        Cliente cliente = ModelMapperUtil.toEntity(clienteModel);
+        var cliente = ModelMapperUtil.toEntity(clienteModel);
         cliente = clientes.save(cliente);
 
         novaProposta(cliente);
@@ -45,17 +46,20 @@ public class ClienteService {
     }
 
     public ClienteModel salvarEndereco(Long id, Endereco endereco) {
-        Optional<Cliente> clienteOptional = buscarCliente(id);
+        var cliente = buscarCliente(id);
         Optional<Cidade> cidadeOptional = cidades.findById(endereco.getCidade().getId());
         endereco.setCidade(cidadeOptional.get());
-        clienteOptional.get().setEndereco(endereco);
+        cliente.setEndereco(endereco);
 
-        return ModelMapperUtil.toModel(clientes.save(clienteOptional.get()));
+        return ModelMapperUtil.toModel(clientes.save(cliente));
     }
 
     public void salvarDocumento(Long id, Documento documento) {
-        Optional<Cliente> clienteOptional = buscarCliente(id);
-        Optional<Proposta> propostaOptional = propostas.findByCliente(clienteOptional.get());
+        var cliente = buscarCliente(id);
+        Optional<Proposta> propostaOptional = propostas.findByCliente(cliente);
+
+        if (propostaOptional.get().getStatus().equals(StatusProposta.AGUARDANDO))
+            throw new NegocioException("Já existe um documento cadastrado para esta proposta");
 
         documento.setProposta(propostaOptional.get());
         documentos.save(documento);
@@ -68,13 +72,11 @@ public class ClienteService {
         propostas.save(proposta);
     }
 
-    private Optional<Cliente> buscarCliente(Long id) {
-        Optional<Cliente> clienteOptional = clientes.findById(id);
+    private Cliente buscarCliente(Long id) {
+        var cliente = clientes.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não localizado"));
 
-        if (clienteOptional.isEmpty())
-            throw new EntidadeNaoEncontradaException("Cliente não localizado");
-
-        return clienteOptional;
+        return cliente;
     }
 
     private Proposta novaProposta(Cliente cliente) {
