@@ -8,6 +8,7 @@ public enum StatusProposta {
     SOLICITADA,
     AGUARDANDO,
     APROVADA,
-    NEGADA;
+    NEGADA,
+    FINALIZADA;
 
 }

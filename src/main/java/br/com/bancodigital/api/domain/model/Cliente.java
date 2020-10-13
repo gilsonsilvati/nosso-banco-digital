@@ -11,9 +11,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "cliente")
 @Getter @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @DynamicUpdate
 public class Cliente extends EntidadeBase {
 

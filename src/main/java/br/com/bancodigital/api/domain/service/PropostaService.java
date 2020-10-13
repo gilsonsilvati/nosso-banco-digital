@@ -31,24 +31,6 @@ public class PropostaService {
         return propostaModel;
     }
 
-    public AceiteModel verificarAceitePorId(Long id, Boolean aceite) {
-        var proposta = buscarPorId(id);
-        proposta.setStatus(aceite ? StatusProposta.APROVADA : StatusProposta.NEGADA);
-        propostas.save(proposta);
-
-        var mensagem = proposta.getStatus().equals(StatusProposta.APROVADA) ?
-                "Sua conta será criada e um e-mail será enviado com seus dados" : "Que pena! Entraremos em contato em breve.";
-
-        var aceiteModel = AceiteModel.builder()
-                .mensagem(mensagem)
-                .nomeCliente(proposta.getCliente().getNome())
-                .emailCliente(proposta.getCliente().getEmail())
-                .status(proposta.getStatus())
-                .build();
-
-        return aceiteModel;
-    }
-
     private Proposta buscarPorId(Long id) {
         return propostas.findById(id)
                 .orElseThrow(() -> new PropostaNaoEncontradaException("Proposta não localizada e/ou não foi iniciado um cadastro de cliente."));
@@ -56,7 +38,7 @@ public class PropostaService {
 
     private PropostaModel toPropostaModel(Proposta proposta) {
         var documentoModel = toDocumentoModel(proposta);
-        var propostaModel = PropostaModel.builder()
+        return PropostaModel.builder()
                 .id(proposta.getId())
                 .tipo(proposta.getTipo())
                 .status(proposta.getStatus())
@@ -64,21 +46,17 @@ public class PropostaService {
                 .data(proposta.getData())
                 .documentoModel(documentoModel)
                 .build();
-
-        return propostaModel;
     }
 
     private DocumentoModel toDocumentoModel(Proposta proposta) {
         var documento = documentos.findByProposta(proposta)
                 .orElseThrow(() -> new DocumentoNaoEncontradoException("Documento não localizado. Favor enviar CPF"));
 
-        var documentoModel = DocumentoModel.builder()
+        return DocumentoModel.builder()
                 .nome(documento.getNome())
                 .formato(documento.getFormato())
                 .arquivoBase64(documento.getArquivoBase64())
                 .build();
-
-        return documentoModel;
     }
 
 }

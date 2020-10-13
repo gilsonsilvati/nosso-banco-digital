@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "proposta")
 @Getter @Setter
 @DynamicUpdate
 public class Proposta extends EntidadeBase {
@@ -27,6 +26,10 @@ public class Proposta extends EntidadeBase {
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
+
+    @OneToOne
+    @JoinColumn(name = "id_conta")
+    private Conta conta;
 
     private LocalDate data;
 

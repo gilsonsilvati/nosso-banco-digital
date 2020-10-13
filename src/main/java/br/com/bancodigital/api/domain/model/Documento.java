@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "documento")
 @Getter @Setter
 @DynamicUpdate
 public class Documento extends EntidadeBase {

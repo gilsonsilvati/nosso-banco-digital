@@ -9,7 +9,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "estado")
 @Getter @Setter
 public class Estado extends EntidadeBase {
 
